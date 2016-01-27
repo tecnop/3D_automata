@@ -175,8 +175,11 @@ ThreeWrapper.prototype  = {
 	},
 	/** Debug / Test methods **/	
 	createRandomCude : function() {
-
-		this.testObject = new Entity();
+		var redColor = getRandomIntInclusive(0,1);
+		var greenColor = getRandomIntInclusive(0,1);
+		var blueColor = getRandomIntInclusive(0,1);
+		
+		this.testObject = new Entity("1;1;10;" + redColor + ";" + greenColor + ";"+ blueColor +";100"); //Si on veut créer un CSV de config pour générer des entitées facilement
 
 		this.entities.add(this.testObject);
 		this.scenes.main.add(this.testObject.object);
@@ -209,7 +212,12 @@ ThreeWrapper.prototype  = {
 			// http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 			requestAnimationFrame(run);
 
-
+			//
+			//Update Logic des entitées
+			//A supprimer si tu penses qu'on peut update les caractéristique en même temps que les positions 
+			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
+				me.entities.list[i].Update();
+			}
 			
 			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
 				
@@ -217,15 +225,13 @@ ThreeWrapper.prototype  = {
 				//	me.entities.list[i].actions.continuous[i](me);
 				//}
 
-				
-
 				if(me.entities.list[i].destination) {
 					var vec = fakeVector.subVectors(
 						me.entities.list[i].destination,
 						me.entities.list[i].getPosition()
 					);
 
-					if( (me.entities.list[i].speed * me.entitiesSpeedFactor) >= me.entities.list[i].destination.distanceTo(me.entities.list[i].getPosition())){
+					if( (me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor) >= me.entities.list[i].destination.distanceTo(me.entities.list[i].getPosition())){
 						me.entities.list[i].setPosition(me.entities.list[i].destination);
 						
 						
@@ -246,9 +252,9 @@ ThreeWrapper.prototype  = {
 							me.entities.list[i].add(
 								vec.normalize().multiply(
 									new THREE.Vector3(
-										(me.entities.list[i].speed / 4) * me.entitiesSpeedFactor,
-										(me.entities.list[i].speed / 4) * me.entitiesSpeedFactor,
-										(me.entities.list[i].speed / 4) * me.entitiesSpeedFactor
+										(me.entities.list[i].Caracteristique.speed / 4) * me.entitiesSpeedFactor,
+										(me.entities.list[i].Caracteristique.speed / 4) * me.entitiesSpeedFactor,
+										(me.entities.list[i].Caracteristique.speed / 4) * me.entitiesSpeedFactor
 									)
 								)
 							);
@@ -257,9 +263,9 @@ ThreeWrapper.prototype  = {
 							me.entities.list[i].add(
 								vec.normalize().multiply(
 									new THREE.Vector3(
-										me.entities.list[i].speed * me.entitiesSpeedFactor,
-										me.entities.list[i].speed * me.entitiesSpeedFactor,
-										me.entities.list[i].speed * me.entitiesSpeedFactor
+										me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor,
+										me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor,
+										me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor
 									)
 								)
 							);

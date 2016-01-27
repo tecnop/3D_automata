@@ -1,0 +1,30 @@
+Alan dorin 
+Jon McCormack
+Felix Woitzel
+Inigo Quilez
+
+Swarm Intelligence
+
+
+
+Gènes des Cellules
+vitesse de déplacement
+faim (vitesse de diminution de la jauge de nourriture)
+gène de reproduction 
+couleurs
+classement des types de nourriture aimée 
+
+
+
+Organes des cellules
+jambes / bras : droite / gauche (Nageoire/patte)
+Antenne : possibilité de sentir les mouvements proches
+Oreilles : entendre les mouvements
+Queue : boost attaque
+Griffe : boost attaque
+Dents : boost attaque
+
+
+Point de fitness 
+Degats subit au cours de la vie
+Nombre de nourriture mangé (apport énergétique global)
