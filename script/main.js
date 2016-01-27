@@ -49,6 +49,10 @@ $(document).ready(function()  {
 		else if (e.charCode == 45){
 			threeWrapper.slowDown();
 		}
+		// o
+		else if (e.charCode == 111){
+			threeWrapper.addOrganTo(threeWrapper.testObject);
+		}
 		else {
 			console.log(e.charCode);
 		}

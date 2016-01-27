@@ -11,6 +11,25 @@ Entity.prototype  = {
 		
 		this.SphereCollider = new SphereCollider(this, 50);
 		
+		this.organs = {
+			map : {},
+			list : [
+				null, // 0 : THEET
+			],
+			add : function(organ){
+				this.map[organ.key] = organ;
+				this.list[organ.organIndex] = organ;
+			},
+			// apply an action for each existing (non-null) organs
+			each : function(action){
+				for (var i = 0, len = this.list.length; i < len; ++i){
+					if (this.list[i]){
+						action(i, this.list[i]);
+					}
+				}
+			}
+		}
+
 		this.key = "e" + (++Entity.COUNT);
 		this.object = new THREE.Mesh(
 			new THREE.BoxGeometry(50, 50, 50), 
@@ -30,9 +49,36 @@ Entity.prototype  = {
 	onDestinationReach : function(){
 		console.log("arrivé ! ");
 	},
+	lookAt : function(vec3){
+		var me = this;
+
+		this.object.lookAt(vec3);
+
+		this.organs.each(function(index, organ){
+			organ.getObject().rotation.copy(me.object.rotation);
+		});
+	},
 	add : function(vec3){
+		var me = this;
+		
 		this.object.position.add(vec3);
 		this.SphereCollider.debugObject.position.add(vec3);
+
+		this.organs.each(function(index, organ){
+			organ.getObject().position.set(
+				me.object.position.x + organ.getRelativePosition().x,
+				me.object.position.y + organ.getRelativePosition().y,
+				me.object.position.z + organ.getRelativePosition().z
+			);
+		});
+	},
+	addOrgan : function(organ){
+		this.organs.add(organ);
+		organ.getObject().position.set(
+			this.object.position.x + organ.getRelativePosition().x,
+			this.object.position.y + organ.getRelativePosition().y,
+			this.object.position.z + organ.getRelativePosition().z
+		);
 	},
 	Update()
 	{

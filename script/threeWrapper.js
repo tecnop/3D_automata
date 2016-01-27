@@ -214,7 +214,9 @@ ThreeWrapper.prototype  = {
 
 	},
 	addOrganTo : function(entity){
-		entity.addOrgan();
+		var organ = new Teeth.default();
+		this.scenes.main.add(organ.getObject());
+		entity.addOrgan(organ);
 	},
 	getRandomVectorInCube : function(vector, depth){
 		var x = Math.floor(Math.random() * (depth - (depth*-1) +1 ) ) + (depth*-1);
@@ -248,11 +250,11 @@ ThreeWrapper.prototype  = {
 			
 			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
 				
-				//for (var i = 0, len = me.entities.list[i].actions.continuous.length; i<len; ++i ) {
-				//	me.entities.list[i].actions.continuous[i](me);
-				//}
 
 				if(me.entities.list[i].destination) {
+
+					me.entities.list[i].lookAt(me.entities.list[i].destination);
+
 					var vec = fakeVector.subVectors(
 						me.entities.list[i].destination,
 						me.entities.list[i].getPosition()
