@@ -1,6 +1,8 @@
 var Organ = function(data){
 	this.key = data.key;
-	this.organIndex = data.organIndex
+	this.organIndex = data.organIndex;
+	if(data.updateFunction != null)
+		this.updateFunction = data.updateFunction;
 }
 
 var Teeth = {
@@ -34,7 +36,7 @@ Organ.prototype = {
 		return this.object;
 	},
 	// OVERRIDE
-	apply : function(entity){
+	applyOnAdd : function(entity){
 		
 	}
 }
@@ -42,4 +44,10 @@ Organ.prototype = {
 Teeth.default.prototype = new Organ({
 	organIndex : 0,
 	key : "teeth-default-" + (++Organ.ID) 
+});
+
+eyes.default.prototype = new Organ({
+	organIndex : 1,
+	key : "eyes-default-" + (++Organ.ID),
+	updateFunction = EyesCheck;
 });

@@ -7,9 +7,9 @@ var FoodRadius = 10;
 
 Food.prototype = {
 	COUNT : 1,
+	TYPE : EntityType.FOOD,
 	init : function(position, type)
 	{
-		this.Collider = new SphereCollider(this, FoodRadius);
 		this.key = "e" + (++Food.COUNT);
 		
 		this.object = new THREE.Mesh(
@@ -20,6 +20,6 @@ Food.prototype = {
 		);
 		
 		this.object.position.copy(position);
-		this.Collider.debugObject.position.copy(position);
+		this.Collider = new SphereCollider(this, FoodRadius);
 	}
 }

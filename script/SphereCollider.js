@@ -17,6 +17,8 @@ SphereCollider.prototype = {
 		);
 		this.debugObject.material.transparent = true;
 		this.debugObject.material.opacity = 0.2;
+		
+		this.debugObject.position.copy(this.entity.object.position);
 	},
 	CheckCollision: function(entity)
 	{

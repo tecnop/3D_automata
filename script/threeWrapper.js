@@ -129,10 +129,7 @@ ThreeWrapper.prototype  = {
 		var average = me.BOX_SIZE/2;
 		for(var i=0; i < 100; ++i)
 		{
-			var x= getRandomIntInclusive(-average, average);
-			var y= getRandomIntInclusive(-average, average);
-			var z= getRandomIntInclusive(-average, average);
-			var newFood = new Food(new THREE.Vector3(x,y,z), "NEWTYPE");
+			var newFood = new Food(getRandomVectorInCube(), "NEWTYPE");
 			me.foods.add(newFood);
 			this.scenes.main.add(newFood.object);
 			this.scenes.main.add(newFood.Collider.debugObject);
@@ -211,21 +208,12 @@ ThreeWrapper.prototype  = {
 		//A virer
 		this.scenes.main.add(this.testObject.SphereCollider.debugObject);
 
-
+		console.log("Nb entities : " + this.entities.list.length);
 	},
 	addOrganTo : function(entity){
 		var organ = new Teeth.default();
 		this.scenes.main.add(organ.getObject());
 		entity.addOrgan(organ);
-	},
-	getRandomVectorInCube : function(vector, depth){
-		var x = Math.floor(Math.random() * (depth - (depth*-1) +1 ) ) + (depth*-1);
-
-		var y = Math.floor(Math.random() * (depth - (depth*-1) +1 ) ) + (depth*-1);
-
-		var z = Math.floor(Math.random() * (depth - (depth*-1) +1 ) ) + (depth*-1);
-
-		return new THREE.Vector3(vector.x + x, vector.y + y, vector.z + z);
 	},
 	/** END **/
 	render : function(){
@@ -306,7 +294,7 @@ ThreeWrapper.prototype  = {
 			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
 				for(var j = i+1, len2 = me.entities.list.length; j < len2; ++j){
 					if(me.entities.list[i].SphereCollider.CheckCollision(me.entities.list[j]))
-						console.log("Entity :" + i + " Collide with :" + j);
+						me.entities.list[i].OnCollision(me.entities.list[j]);
 				}
 			}
 			

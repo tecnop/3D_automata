@@ -4,12 +4,11 @@ var Entity = function (data){
 
 Entity.prototype  = { 
 	COUNT : 1,
+	TYPE : EntityType.CREATURE,
 	init : function(data) {
 		this.Caracteristique = new EntityCaracteristique(data);
 		//this.speed = 1;
 		//this.rotationSpeed = 1;
-		
-		this.SphereCollider = new SphereCollider(this, 50);
 		
 		this.organs = {
 			map : {},
@@ -38,8 +37,12 @@ Entity.prototype  = {
 				color: this.Caracteristique.Color,//new THREE.Color( 1, 0, 0 ),
 			})
 		);
-
 		this.object.add(this.entityObject);
+		this.object.position.copy(getRandomVectorInCube());
+		
+		this.SphereCollider = new SphereCollider(this, 50);
+		
+		this.destination = getRandomVectorInCube();
 
 	},
 	getPosition : function(){
@@ -50,7 +53,8 @@ Entity.prototype  = {
 		this.SphereCollider.debugObject.position.copy(vec3);
 	},
 	onDestinationReach : function(){
-		console.log("arrivé ! ");
+		//console.log("arrivé ! ");
+		this.destination = getRandomVectorInCube();
 	},
 	lookAt : function(vec3){
 		var me = this;
@@ -77,8 +81,17 @@ Entity.prototype  = {
 	Update()
 	{
 		this.Caracteristique.Update();
+	},
+	OnCollision(CollideEntity)
+	{
+		switch(this.Caracteristique.State)
+		{
+			case EntityState.HUNTING:
+			{
+				console.log("hunt touch");
+			}
+		}
 	}
-
 }
 
 var EntityState = {
@@ -113,7 +126,7 @@ EntityCaracteristique.prototype = {
 		this.Hunger=0;
 		this.Tiredness=0;
 		
-		this.State= EntityState.NONE;
+		this.State= EntityState.HUNTING;
 		
 		this.LifeTime=0;
 		this.Energy=100;

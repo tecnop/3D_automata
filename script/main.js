@@ -1,6 +1,6 @@
 $(document).ready(function()  {
 	
-	console.log("super");
+	//console.log("super");
 
 	var threeWrapper = new ThreeWrapper({
 		container : $('#main-canvas'),
@@ -23,11 +23,12 @@ $(document).ready(function()  {
 
 		// t
 		if (e.charCode == 116){
-			threeWrapper.createRandomCude();
+			for(var i=0; i < 100; ++i)
+				threeWrapper.createRandomCude();
 		}
 		//z
 		else if (e.charCode == 122){
-			threeWrapper.testObject.destination = threeWrapper.getRandomVectorInCube(threeWrapper.testObject.object.position, 500);
+			//threeWrapper.testObject.destination = threeWrapper.getRandomVectorInCube(threeWrapper.testObject.object.position, 500);
 		}
 		//s
 		else if (e.charCode == 115){
