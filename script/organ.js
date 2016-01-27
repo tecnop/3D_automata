@@ -15,6 +15,7 @@ var Teeth = {
 			})
 		);
 
+		console.log(this.object);
 		this.apply = function(entity){
 
 		}

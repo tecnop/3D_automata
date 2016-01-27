@@ -31,12 +31,15 @@ Entity.prototype  = {
 		}
 
 		this.key = "e" + (++Entity.COUNT);
-		this.object = new THREE.Mesh(
+		this.object =  new THREE.Object3D();
+		this.entityObject = new THREE.Mesh(
 			new THREE.BoxGeometry(50, 50, 50), 
 			new THREE.MeshLambertMaterial({
 				color: this.Caracteristique.Color,//new THREE.Color( 1, 0, 0 ),
 			})
 		);
+
+		this.object.add(this.entityObject);
 
 	},
 	getPosition : function(){
@@ -54,26 +57,17 @@ Entity.prototype  = {
 
 		this.object.lookAt(vec3);
 
-		this.organs.each(function(index, organ){
-			organ.getObject().rotation.copy(me.object.rotation);
-		});
 	},
 	add : function(vec3){
 		var me = this;
-		
+
 		this.object.position.add(vec3);
 		this.SphereCollider.debugObject.position.add(vec3);
-
-		this.organs.each(function(index, organ){
-			organ.getObject().position.set(
-				me.object.position.x + organ.getRelativePosition().x,
-				me.object.position.y + organ.getRelativePosition().y,
-				me.object.position.z + organ.getRelativePosition().z
-			);
-		});
 	},
 	addOrgan : function(organ){
 		this.organs.add(organ);
+
+		this.object.add(organ.getObject());
 		organ.getObject().position.set(
 			this.object.position.x + organ.getRelativePosition().x,
 			this.object.position.y + organ.getRelativePosition().y,
