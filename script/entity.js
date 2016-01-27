@@ -9,9 +9,11 @@ Entity.prototype  = {
 		//this.speed = 1;
 		//this.rotationSpeed = 1;
 		
+		this.SphereCollider = new SphereCollider(this, 50);
+		
 		this.key = "e" + (++Entity.COUNT);
 		this.object = new THREE.Mesh(
-			new THREE.BoxGeometry(50, 50, 200), 
+			new THREE.BoxGeometry(50, 50, 50), 
 			new THREE.MeshLambertMaterial({
 				color: this.Caracteristique.Color,//new THREE.Color( 1, 0, 0 ),
 			})
@@ -23,16 +25,17 @@ Entity.prototype  = {
 	},
 	setPosition : function(vec3) {
 		this.object.position.copy(vec3);
+		this.SphereCollider.debugObject.position.copy(vec3);
 	},
 	onDestinationReach : function(){
 		console.log("arrivé ! ");
 	},
 	add : function(vec3){
 		this.object.position.add(vec3);
+		this.SphereCollider.debugObject.position.add(vec3);
 	},
 	Update()
 	{
-		console.log("update entity");
 		this.Caracteristique.Update();
 	}
 
@@ -41,8 +44,8 @@ Entity.prototype  = {
 var EntityState = {
 	NONE : {value:0},
 	SLEEPING : {value:1},
-	HUNTING : {value:2},
-	REPRODUCTING: {value:3}
+	HUNTING : {value:2}, //Chercher de la nourriture
+	REPRODUCTING: {value:3} //Chercher a se reproduire
 };
 
 var EntityCaracteristique = function (data){

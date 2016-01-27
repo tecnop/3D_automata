@@ -2,6 +2,9 @@ var ThreeWrapper = function (data){
 	this.inject(data);
 }
 ThreeWrapper.prototype  = {
+	//Box size
+	BOX_SIZE : 6000,
+	
 	// Camera attributes
 	MAX_Z : 5000,
 	VIEW_ANGLE : 45,
@@ -58,6 +61,14 @@ ThreeWrapper.prototype  = {
 				this.list.push(entity);
 			}
 		};
+		this.foods = {
+			map : {},
+			list : [],
+			add : function(food){
+				this.map[food.key] = food;
+				this.list.push(food);
+			}
+		};
 
 		data.container.append(this.container);
 
@@ -112,6 +123,20 @@ ThreeWrapper.prototype  = {
 					})
 			)
 		);
+		
+		
+		//Food Initialization
+		var average = me.BOX_SIZE/2;
+		for(var i=0; i < 100; ++i)
+		{
+			var x= getRandomIntInclusive(-average, average);
+			var y= getRandomIntInclusive(-average, average);
+			var z= getRandomIntInclusive(-average, average);
+			var newFood = new Food(new THREE.Vector3(x,y,z), "NEWTYPE");
+			me.foods.add(newFood);
+			this.scenes.main.add(newFood.object);
+			this.scenes.main.add(newFood.Collider.debugObject);
+		}
 	},
 	reset : function(newParams){
 
@@ -183,6 +208,8 @@ ThreeWrapper.prototype  = {
 
 		this.entities.add(this.testObject);
 		this.scenes.main.add(this.testObject.object);
+		//A virer
+		this.scenes.main.add(this.testObject.SphereCollider.debugObject);
 
 
 	},
@@ -272,16 +299,23 @@ ThreeWrapper.prototype  = {
 						}
 					}
 				}
-
+			}
+		
+			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
+				for(var j = i+1, len2 = me.entities.list.length; j < len2; ++j){
+					if(me.entities.list[i].SphereCollider.CheckCollision(me.entities.list[j]))
+						console.log("Entity :" + i + " Collide with :" + j);
+				}
 			}
 			
-
+			//Render function
 			me.pointLight.position.copy(me.cameras.main.position);
 
 			me.renderer.render(me.scenes.main, me.cameras.main);
-		}
 
+		}
 		
+
 		
 		run();
 	}
