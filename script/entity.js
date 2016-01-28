@@ -72,10 +72,11 @@ Entity.prototype  = {
 		this.organs.add(organ);
 
 		this.object.add(organ.getObject());
+
 		organ.getObject().position.set(
-			this.object.position.x + organ.getRelativePosition().x,
-			this.object.position.y + organ.getRelativePosition().y,
-			this.object.position.z + organ.getRelativePosition().z
+			organ.getRelativePosition().x,
+			organ.getRelativePosition().y,
+			organ.getRelativePosition().z
 		);
 	},
 	Update()
@@ -106,6 +107,13 @@ Entity.prototype  = {
 				}
 			}
 		}
+	},
+	delete : function(){
+		this.removeFromScene();
+	},
+	// OVERRIDE
+	removeFromScene : function(){
+		console.warn(this.key + " : removeFromScene method must be overrided.")
 	}
 }
 

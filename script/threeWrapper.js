@@ -39,6 +39,7 @@ ThreeWrapper.prototype  = {
 		}
 	},
 	inject : function(data){
+		var threeWrapperCtx = this;
 
 		this.evaluateMode = false;
 		this.currentStep = this.Z_GAP;
@@ -57,8 +58,33 @@ ThreeWrapper.prototype  = {
 			map : {},
 			list : [],
 			add : function(entity){
+				var entitiesCtx = this;
+
 				this.map[entity.key] = entity;
 				this.list.push(entity);
+
+				var index = this.list.length - 1;
+
+				entity.removeFromScene = function(){
+
+					//console.log("list["+index+"] : ", entitiesCtx.list[index] , "map[" + entity.key + "] : ", entitiesCtx.map[entity.key])
+					
+					entitiesCtx.list.splice(index);
+					delete entitiesCtx.map[entity.key];
+
+					// Delete collider
+					if (entity.SphereCollider.debugObject){
+						threeWrapperCtx.scenes.main.remove(entity.SphereCollider.debugObject);
+					}
+
+					// Delete organs
+					entity.organs.each(function(i, organ){
+						organ.delete();
+					});
+
+					// Delete entity object
+					threeWrapperCtx.scenes.main.remove(entity.object);
+				}
 			}
 		};
 		this.foods = {
@@ -113,14 +139,27 @@ ThreeWrapper.prototype  = {
 		// add to the scene
 		me.scenes.main.add(pointLight);
 
+
+
+		var skyDomeMaterial = new THREE.ShaderMaterial( {
+		    uniforms: {  
+		    },
+			vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+			fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+			side: THREE.BackSide,
+			blending: THREE.AdditiveBlending,
+			transparent: true,
+		});
+
 		// add "sky box"
 		me.scenes.main.add(
 			new THREE.Mesh(
-				new THREE.SphereGeometry(6000, 32, 32), 
-					new THREE.MeshLambertMaterial({
+				new THREE.SphereGeometry(9000, 24, 24), 
+					skyDomeMaterial
+					/*new THREE.MeshLambertMaterial({
 						color: new THREE.Color( 0, 0, 0.5 ),
 						side : THREE.BackSide
-					})
+					})*/
 			)
 		);
 		
@@ -175,7 +214,7 @@ ThreeWrapper.prototype  = {
 		me.start();
 	},
 	speedUp : function(){
-		this.entitiesSpeedFactor *=2 ;
+		this.entitiesSpeedFactor *= 2;
 	},
 	slowDown : function(){
 		this.entitiesSpeedFactor /= 2;
@@ -200,22 +239,33 @@ ThreeWrapper.prototype  = {
 		var redColor = getRandomIntInclusive(0,1);
 		var greenColor = getRandomIntInclusive(0,1);
 		var blueColor = getRandomIntInclusive(0,1);
-		
-		this.testObject = new Entity("1;1;10;" + redColor + ";" + greenColor + ";"+ blueColor +";100000"); //Si on veut créer un CSV de config pour générer des entitées facilement
+	
+		var testObject = new Entity("1;1;10;" + redColor + ";" + greenColor + ";"+ blueColor +";100000"); //Si on veut créer un CSV de config pour générer des entitées facilement
 
-		this.entities.add(this.testObject);
-		this.scenes.main.add(this.testObject.object);
+		this.addOrganTo(
+			new Mouth.default(),
+			testObject
+		);
+
+		this.entities.add(testObject);
+		this.scenes.main.add(testObject.object);
 		//A virer
-		this.scenes.main.add(this.testObject.SphereCollider.debugObject);
+		this.scenes.main.add(testObject.SphereCollider.debugObject);
 
 		//console.log("Nb entities : " + this.entities.list.length);
 	},
-	addOrganTo : function(entity){
-		var organ = new Teeth.default();
+	
+	/** END **/
+	addOrganTo : function(organ, entity){
+		var threeWrapperCtx = this;
+
 		this.scenes.main.add(organ.getObject());
 		entity.addOrgan(organ);
+
+		organ.removeFromScene = function(){
+			threeWrapperCtx.scenes.main.remove(organ.getObject());
+		}
 	},
-	/** END **/
 	render : function(){
 		var me = this,
 			fakeVector = new THREE.Vector3(0,0,0);
@@ -238,6 +288,11 @@ ThreeWrapper.prototype  = {
 			
 			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
 				
+				// Organs update
+				me.entities.list[i].organs.each(function(i, organ){
+					organ.Update();
+				});
+
 
 				if(me.entities.list[i].destination) {
 
