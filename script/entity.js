@@ -88,18 +88,40 @@ Entity.prototype  = {
 		{
 			case EntityState.HUNTING:
 			{
-				console.log("hunt touch");
+				if(CollideEntity.TYPE == EntityType.FOOD)
+				{
+					console.log("eat food");
+					this.Caracteristique.addCaracteristiqueValue(CaracteristiquesEnum.HUNGER, 10);
+				}else if(CollideEntity.TYPE == EntityType.CREATURE)
+				{
+					console.log("eat creature");
+					this.Caracteristique.addCaracteristiqueValue(CaracteristiquesEnum.HUNGER, 10);
+				}
+			}
+			case EntityState.REPRODUCTING:
+			{
+				if(CollideEntity.TYPE == EntityType.CREATURE && CollideEntity.Caracteristique.State == EntityState.REPRODUCTING)
+				{
+					console.log("bebe creature");
+				}
 			}
 		}
 	}
 }
 
 var EntityState = {
-	NONE : {value:0},
-	SLEEPING : {value:1},
-	HUNTING : {value:2}, //Chercher de la nourriture
-	REPRODUCTING: {value:3} //Chercher a se reproduire
+	NONE : 0,
+	SLEEPING : 1,
+	HUNTING : 2, //Chercher de la nourriture
+	REPRODUCTING: 3 //Chercher a se reproduire
 };
+
+var CaracteristiquesEnum = {
+	SPEED : 0,
+	ATTACK_DAMAGE : 1,
+	HUNGER : 2,
+	TIREDNESS : 3
+}
 
 var EntityCaracteristique = function (data){
 	this.init(data);
@@ -117,6 +139,7 @@ EntityCaracteristique.prototype = {
 	},
 	CreateNewEntity()
 	{
+		
 		this.speed = 1;
 		this.rotationSpeed = 1;
 		//
@@ -126,7 +149,7 @@ EntityCaracteristique.prototype = {
 		this.Hunger=0;
 		this.Tiredness=0;
 		
-		this.State= EntityState.HUNTING;
+		this.State = EntityState.HUNTING;
 		
 		this.LifeTime=0;
 		this.Energy=100;
@@ -142,13 +165,29 @@ EntityCaracteristique.prototype = {
 		this.Hunger=0;
 		this.Tiredness=0;
 		
-		this.State= EntityState.NONE;
+		this.State= EntityState.HUNTING;
 		
 		this.LifeTime=0;
 		this.Energy=parameters[6];
 	},
-	
-	
+	addCaracteristiqueValue(Caracteristique, value)
+	{
+		switch(Caracteristique)
+		{
+			case CaracteristiquesEnum.SPEED:
+				this.speed += value;
+				break;
+			case CaracteristiquesEnum.ATTACK_DAMAGE:
+				this.attackDamage += value;
+				break;
+			case CaracteristiquesEnum.HUNGER:
+				this.Hunger += value;
+				break;
+			case CaracteristiquesEnum.TIREDNESS:
+				this.Tiredness += value;
+				break;
+		}
+	},
 	Update : function()
 	{
 		this.LifeTime += 1;
@@ -160,6 +199,11 @@ EntityCaracteristique.prototype = {
 			this.Tiredness -= 1;
 		
 		
-		this.Energy 
+		this.Energy = this.Hunger * this.LifeTime;
+		
+		if(this.Energy > 100 * 100)
+		{
+			console.log("dead");
+		}
 	}
 }

@@ -46,8 +46,8 @@ Teeth.default.prototype = new Organ({
 	key : "teeth-default-" + (++Organ.ID) 
 });
 
-eyes.default.prototype = new Organ({
+/*eyes.default.prototype = new Organ({
 	organIndex : 1,
 	key : "eyes-default-" + (++Organ.ID),
 	updateFunction = EyesCheck;
-});
+});*/

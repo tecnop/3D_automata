@@ -1,4 +1,4 @@
 var EntityType = {
-	FOOD : {value:0},
-	CREATURE : {value:1}
+	FOOD : 0,
+	CREATURE : 1
 };

@@ -132,7 +132,7 @@ ThreeWrapper.prototype  = {
 			var newFood = new Food(getRandomVectorInCube(), "NEWTYPE");
 			me.foods.add(newFood);
 			this.scenes.main.add(newFood.object);
-			this.scenes.main.add(newFood.Collider.debugObject);
+			this.scenes.main.add(newFood.SphereCollider.debugObject);
 		}
 	},
 	reset : function(newParams){
@@ -201,14 +201,14 @@ ThreeWrapper.prototype  = {
 		var greenColor = getRandomIntInclusive(0,1);
 		var blueColor = getRandomIntInclusive(0,1);
 		
-		this.testObject = new Entity("1;1;10;" + redColor + ";" + greenColor + ";"+ blueColor +";100"); //Si on veut créer un CSV de config pour générer des entitées facilement
+		this.testObject = new Entity("1;1;10;" + redColor + ";" + greenColor + ";"+ blueColor +";100000"); //Si on veut créer un CSV de config pour générer des entitées facilement
 
 		this.entities.add(this.testObject);
 		this.scenes.main.add(this.testObject.object);
 		//A virer
 		this.scenes.main.add(this.testObject.SphereCollider.debugObject);
 
-		console.log("Nb entities : " + this.entities.list.length);
+		//console.log("Nb entities : " + this.entities.list.length);
 	},
 	addOrganTo : function(entity){
 		var organ = new Teeth.default();
@@ -295,6 +295,11 @@ ThreeWrapper.prototype  = {
 				for(var j = i+1, len2 = me.entities.list.length; j < len2; ++j){
 					if(me.entities.list[i].SphereCollider.CheckCollision(me.entities.list[j]))
 						me.entities.list[i].OnCollision(me.entities.list[j]);
+				}
+				for(var k =0,  len = me.foods.list.length; k < len; ++k)
+				{
+					if(me.entities.list[i].SphereCollider.CheckCollision(me.foods.list[k]))
+						me.entities.list[i].OnCollision(me.foods.list[k]);
 				}
 			}
 			

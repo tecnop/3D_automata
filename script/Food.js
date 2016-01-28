@@ -20,6 +20,9 @@ Food.prototype = {
 		);
 		
 		this.object.position.copy(position);
-		this.Collider = new SphereCollider(this, FoodRadius);
+		this.SphereCollider = new SphereCollider(this, FoodRadius);
+	},
+	getPosition : function(){
+		return this.object.position;
 	}
 }
