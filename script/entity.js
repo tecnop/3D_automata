@@ -34,6 +34,7 @@ Entity.prototype  = {
 		}
 
 		this.key = "e" + (++Entity.COUNT);
+		
 		this.object =  new THREE.Object3D();
 		this.entityObject = new THREE.Mesh(
 			new THREE.BoxGeometry(50, 50, 50), 
@@ -217,7 +218,7 @@ EntityCaracteristique.prototype = {
 		
 		if(this.Energy > 100 * 100)
 		{
-			//console.log("dead");
+
 		}
 	}
 }

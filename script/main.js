@@ -60,7 +60,7 @@ $(document).ready(function()  {
 		else if (e.charCode == 111){
 
 			threeWrapper.addOrganTo(
-				new Mouth.default(),
+				new Body.default(),
 				threeWrapper.entities.list[threeWrapper.entities.list.length - 1]
 			);
 			

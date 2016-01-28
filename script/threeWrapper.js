@@ -105,6 +105,8 @@ ThreeWrapper.prototype  = {
 		var me = this;
 		THREE.ImageUtils.crossOrigin = "anonymous"; 
 
+		this.clock = new THREE.Clock();
+
 		me.renderer = new THREE.WebGLRenderer();
 
 		me.cameras.main = new THREE.PerspectiveCamera(
@@ -140,10 +142,12 @@ ThreeWrapper.prototype  = {
 		// add to the scene
 		me.scenes.main.add(pointLight);
 
-
-
-		var skyDomeMaterial = new THREE.ShaderMaterial( {
+		this.skyDomeMaterial = new THREE.ShaderMaterial( {
 		    uniforms: {  
+		    	factor : {
+		    		type : 'f',
+		    		value : 0.0
+		    	},
 		    },
 			vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
 			fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
@@ -156,7 +160,7 @@ ThreeWrapper.prototype  = {
 		me.scenes.main.add(
 			new THREE.Mesh(
 				new THREE.SphereGeometry(9000, 24, 24), 
-					skyDomeMaterial
+					this.skyDomeMaterial
 					/*new THREE.MeshLambertMaterial({
 						color: new THREE.Color( 0, 0, 0.5 ),
 						side : THREE.BackSide
@@ -248,6 +252,20 @@ ThreeWrapper.prototype  = {
 			testObject
 		);
 
+		this.addOrganTo(
+			new Head.default(),
+			testObject
+		);
+
+		this.addOrganTo(
+			new Body.default(),
+			testObject
+		);
+
+		this.addOrganTo(
+			new LeftPart.default(),
+			testObject
+		);
 		this.entities.add(testObject);
 		this.scenes.main.add(testObject.object);
 		//this.scenes.main.add(testObject.particuleEngine.particleMesh);
@@ -284,6 +302,10 @@ ThreeWrapper.prototype  = {
 			if(me.paused)
 				return;
 
+			var toDelete = [];
+			
+			me.skyDomeMaterial.uniforms.factor.value = me.clock.getElapsedTime();
+
 			// ref :
 			// http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 			requestAnimationFrame(run);
@@ -302,7 +324,7 @@ ThreeWrapper.prototype  = {
 					organ.Update();
 				});
 
-
+				
 				if(me.entities.list[i].destination) {
 
 					me.entities.list[i].lookAt(me.entities.list[i].destination);
@@ -327,32 +349,18 @@ ThreeWrapper.prototype  = {
 
 					}
 					else {
-						// Reduce speed for entities on validations
-						if (me.entities.list[i].onValidation){
-
-							me.entities.list[i].add(
-								vec.normalize().multiply(
-									new THREE.Vector3(
-										(me.entities.list[i].Caracteristique.speed / 4) * me.entitiesSpeedFactor,
-										(me.entities.list[i].Caracteristique.speed / 4) * me.entitiesSpeedFactor,
-										(me.entities.list[i].Caracteristique.speed / 4) * me.entitiesSpeedFactor
-									)
+						me.entities.list[i].add(
+							vec.normalize().multiply(
+								new THREE.Vector3(
+									me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor,
+									me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor,
+									me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor
 								)
-							);
-						}
-						else {
-							me.entities.list[i].add(
-								vec.normalize().multiply(
-									new THREE.Vector3(
-										me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor,
-										me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor,
-										me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor
-									)
-								)
-							);
-						}
+							)
+						);
 					}
 				}
+				
 			}
 		
 			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
@@ -367,6 +375,9 @@ ThreeWrapper.prototype  = {
 				}
 			}
 			
+			for (var i = 0; i < toDelete.length; ++i){
+				toDelete[i].delete();
+			}
 			//Render function
 			me.pointLight.position.copy(me.cameras.main.position);
 
