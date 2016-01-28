@@ -351,7 +351,7 @@ ThreeWrapper.prototype  = {
 					if(me.entities.list[i].SphereCollider.CheckCollision(me.entities.list[j]))
 						me.entities.list[i].OnCollision(me.entities.list[j]);
 				}
-				for(var k =0,  len = me.foods.list.length; k < len; ++k)
+				for(var k =0,  len3 = me.foods.list.length; k < len3; ++k)
 				{
 					if(me.entities.list[i].SphereCollider.CheckCollision(me.foods.list[k]))
 						me.entities.list[i].OnCollision(me.foods.list[k]);
