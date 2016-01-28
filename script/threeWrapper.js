@@ -39,6 +39,7 @@ ThreeWrapper.prototype  = {
 		}
 	},
 	inject : function(data){
+		this.clock = new THREE.Clock();
 		var threeWrapperCtx = this;
 
 		this.evaluateMode = false;
@@ -249,12 +250,20 @@ ThreeWrapper.prototype  = {
 
 		this.entities.add(testObject);
 		this.scenes.main.add(testObject.object);
+		//this.scenes.main.add(testObject.particuleEngine.particleMesh);
 		//A virer
 		this.scenes.main.add(testObject.SphereCollider.debugObject);
 
 		//console.log("Nb entities : " + this.entities.list.length);
 	},
-	
+	/*createParticuleEngine : function()
+	{
+		this.particuleEngine = new ParticleEngine();
+		this.particuleEngine.setValues( Examples.smoke );
+		this.particuleEngine.initialize(this.scenes.main);
+		
+		//this.scenes.main.add(this.particuleEngine.particleMesh);
+	},*/
 	/** END **/
 	addOrganTo : function(organ, entity){
 		var threeWrapperCtx = this;
@@ -278,12 +287,12 @@ ThreeWrapper.prototype  = {
 			// ref :
 			// http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 			requestAnimationFrame(run);
-
+			
 			//
 			//Update Logic des entitées
 			//A supprimer si tu penses qu'on peut update les caractéristique en même temps que les positions 
 			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
-				me.entities.list[i].Update();
+				me.entities.list[i].Update(me.clock.getDelta());
 			}
 			
 			for (var i = 0, len = me.entities.list.length; i < len; ++i) {

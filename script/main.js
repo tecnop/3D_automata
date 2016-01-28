@@ -1,7 +1,12 @@
+var AudioManager = new audioManager();
+
 $(document).ready(function()  {
 	
 	//console.log("super");
 
+	AudioManager.init();
+	AudioManager.loadSound("Sound/Pop.mp3","Pop");
+	
 	var threeWrapper = new ThreeWrapper({
 		container : $('#main-canvas'),
 		paused : false,
@@ -29,6 +34,7 @@ $(document).ready(function()  {
 		//z
 		else if (e.charCode == 122){
 			//threeWrapper.testObject.destination = threeWrapper.getRandomVectorInCube(threeWrapper.testObject.object.position, 500);
+			//threeWrapper.createParticuleEngine();
 		}
 		//s
 		else if (e.charCode == 115){

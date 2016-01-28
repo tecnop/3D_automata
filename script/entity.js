@@ -10,6 +10,10 @@ Entity.prototype  = {
 		//this.speed = 1;
 		//this.rotationSpeed = 1;
 		
+		/*this.particuleEngine = new ParticleEngine();
+		this.particuleEngine.setValues( Examples.smoke );
+		this.particuleEngine.initialize();*/
+		
 		this.organs = {
 			map : {},
 			list : [
@@ -79,9 +83,10 @@ Entity.prototype  = {
 			organ.getRelativePosition().z
 		);
 	},
-	Update()
+	Update(dt)
 	{
 		this.Caracteristique.Update();
+		//this.particuleEngine.update( dt * 0.5 );
 	},
 	OnCollision(CollideEntity)
 	{
@@ -98,6 +103,7 @@ Entity.prototype  = {
 					console.log("eat creature");
 					this.Caracteristique.addCaracteristiqueValue(CaracteristiquesEnum.HUNGER, 10);
 				}
+				AudioManager.playSound("Pop");
 			}
 			case EntityState.REPRODUCTING:
 			{
@@ -211,7 +217,7 @@ EntityCaracteristique.prototype = {
 		
 		if(this.Energy > 100 * 100)
 		{
-			console.log("dead");
+			//console.log("dead");
 		}
 	}
 }
