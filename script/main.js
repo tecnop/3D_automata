@@ -23,7 +23,7 @@ $(document).ready(function()  {
 
 		// t
 		if (e.charCode == 116){
-			for(var i=0; i < 100; ++i)
+			for(var i=0; i < 2; ++i)
 				threeWrapper.createRandomCude();
 		}
 		//z
@@ -40,7 +40,7 @@ $(document).ready(function()  {
 		}
 		//d
 		else if (e.charCode == 100){
-			
+			threeWrapper.entities.list[threeWrapper.entities.list.length - 1].delete();
 		}
 		// +
 		else if (e.charCode == 43){
@@ -52,7 +52,12 @@ $(document).ready(function()  {
 		}
 		// o
 		else if (e.charCode == 111){
-			threeWrapper.addOrganTo(threeWrapper.testObject);
+
+			threeWrapper.addOrganTo(
+				new Mouth.default(),
+				threeWrapper.entities.list[threeWrapper.entities.list.length - 1]
+			);
+			
 		}
 		else {
 			console.log(e.charCode);
@@ -115,4 +120,6 @@ THREE.StaticShader = {
 	].join("\n")
 
 };
+
+
 
