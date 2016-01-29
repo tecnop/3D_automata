@@ -84,6 +84,8 @@ Entity.prototype  = {
 		this.SphereCollider = new SphereCollider(this, 600);
 		
 		this.destination = getRandomVectorInCube();
+		
+		this.createParticuleEmitter();
 
 	},
 	getPosition : function(){
@@ -98,7 +100,7 @@ Entity.prototype  = {
 		this.object.scale.copy(vec3);
 	},
 	onDestinationReach : function(){
-		console.log("arrivee ! ");
+		//console.log("arrivee ! ");
 
 		if (this.trackedFood){
 			if (this.trackedFood.object.position.distanceTo(this.getPosition()) <= 10){
@@ -148,6 +150,8 @@ Entity.prototype  = {
 	},
 	Update : function(threeWrapper, entity) {
 		
+		this.particleGroup.tick(0.01);//threeWrapper.clock.getDelta());
+		
 		entity.effects.each(function(i, effect){
 			if (effect.overTime){
 				effect.overTime(entity);
@@ -161,7 +165,7 @@ Entity.prototype  = {
 
 		entity.effects.flushRemovePool(entity);
 
-		
+		this.emitter.position.value = this.getPosition();
 
 		/*if(this.State != EntityState.SLEEPING)
 			this.Tiredness += 1;
@@ -228,6 +232,44 @@ Entity.prototype  = {
 	// OVERRIDE
 	removeFromScene : function(){
 		console.warn(this.key + " : removeFromScene method must be overrided.")
+	},
+	
+	createParticuleEmitter : function() {
+		this.particleGroup = new SPE.Group({
+			texture: {
+				value: THREE.ImageUtils.loadTexture('./images/smokeparticle.png')
+			},
+			maxParticleCount : 300
+		});
+		this.emitter = new SPE.Emitter({
+			maxAge: {
+				value: 0.5
+			},
+			position: {
+				value: this.getPosition(),
+				spread: new THREE.Vector3( 0, 0, 0 )
+			},
+			acceleration: {
+				value: new THREE.Vector3(0, -10, 0),
+				spread: new THREE.Vector3( 1000, 0, 1000 )
+			},
+			velocity: {
+				value: new THREE.Vector3(0, 25, 0),
+				spread: new THREE.Vector3(1000, 750, 1000)
+			},
+			color: {
+				value: this.Caracteristique.color
+			},
+			size: {
+				value: 100
+			},
+			particleCount: 200
+		});
+		
+		this.particleGroup.addEmitter(this.emitter);
+		//scene.add( particleGroup.mesh );
+		/*document.querySelector('.numParticles').textContent =
+			'Total particles: ' + emitter.particleCount;*/
 	}
 }
 

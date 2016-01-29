@@ -55,6 +55,39 @@ ThreeWrapper.prototype  = {
 		this.aspect = this.size.width / this.size.height;
 		this.scenes = {};
 		this.cameras = {};
+		
+		/*this.particleGroup = new SPE.Group({
+			texture: {
+				value: THREE.ImageUtils.loadTexture('./images/smokeparticle.png')
+			}
+		});
+		this.emitter = new SPE.Emitter({
+			maxAge: {
+				value: 2
+			},
+			position: {
+				value: new THREE.Vector3(0, 0, -50),
+				spread: new THREE.Vector3( 0, 0, 0 )
+			},
+			acceleration: {
+				value: new THREE.Vector3(0, -10, 0),
+				spread: new THREE.Vector3( 10, 0, 10 )
+			},
+			velocity: {
+				value: new THREE.Vector3(0, 25, 0),
+				spread: new THREE.Vector3(10, 7.5, 10)
+			},
+			color: {
+				value: [ new THREE.Color('white'), new THREE.Color('red') ]
+			},
+			size: {
+				value: 100
+			},
+			particleCount: 2000
+		});
+		
+		this.particleGroup.addEmitter(this.emitter);*/
+		
 		this.entities = {
 			map : {},
 			list : [],
@@ -131,7 +164,6 @@ ThreeWrapper.prototype  = {
 
 		me.scenes.main = new THREE.Scene();
 
-
 		var controls = new THREE.OrbitControls( me.cameras.main , me.orbitContainer || document);
 
 
@@ -152,6 +184,8 @@ ThreeWrapper.prototype  = {
 
 		me.pointLight = pointLight;
 
+		//me.scenes.main.add(me.particleGroup.mesh);
+		
 		// add to the scene
 		me.scenes.main.add(pointLight);
 
@@ -256,9 +290,9 @@ ThreeWrapper.prototype  = {
 	},
 	/** Debug / Test methods **/	
 	createRandomCude : function() {
-		var redColor = getRandomIntInclusive(0,1);
-		var greenColor = getRandomIntInclusive(0,1);
-		var blueColor = getRandomIntInclusive(0,1);
+		var redColor = Math.random();
+		var greenColor = Math.random();
+		var blueColor = Math.random();
 	
 		var testObject = new Entity("1;1;10;" + redColor + ";" + greenColor + ";"+ blueColor +";100000"); //Si on veut créer un CSV de config pour générer des entitées facilement
 
@@ -289,9 +323,13 @@ ThreeWrapper.prototype  = {
 
 		this.entities.add(testObject);
 		this.scenes.main.add(testObject.object);
+		
+		this.scenes.main.add(testObject.particleGroup.mesh);
+		//this.particleGroup.addEmitter(testObject.emitter);
+		
 		//this.scenes.main.add(testObject.particuleEngine.particleMesh);
 		//A virer
-		this.scenes.main.add(testObject.SphereCollider.debugObject);
+		//this.scenes.main.add(testObject.SphereCollider.debugObject);
 
 		var s = Math.floor(Math.random() * (3 - 1)) + 1;
 
@@ -334,6 +372,9 @@ ThreeWrapper.prototype  = {
 			// ref :
 			// http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 			requestAnimationFrame(run);
+			
+			
+			//me.particleGroup.tick(me.clock.getDelta());
 			
 			//
 			//Update Logic des entitées
