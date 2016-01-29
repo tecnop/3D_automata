@@ -1,3 +1,4 @@
+
 var Entity = function (data){
 	this.init(data);
 }
@@ -14,15 +15,29 @@ Entity.prototype  = {
 			map : {},
 			removePool : [],
 			add : function(effect){
-				effect.index = this.list.length -1;
+				
 				this.map[effect.key] = effect;
 				this.list.push(effect);
 				effect.apply(me);
 			},
 			remove : function(effect){
+				var index = -1;
+				for (var i = 0; i < this.list.length; ++i){
+					if (this.list[i].key == effect.key){
+						
+						index = i;
+						break;
+					}
+				}
 
+				
 				effect.remove(me);
-				this.list.splice(effect.index);
+
+				if( -1 != index){
+					console.log("remove");
+					this.list.splice(index);
+				}
+
 				delete this.map[effect.key];
 			},
 			each : function(action){
@@ -58,6 +73,27 @@ Entity.prototype  = {
 			add : function(organ){
 				this.map[organ.key] = organ;
 				this.list[organ.organIndex] = organ;
+				organ.onEntityAdd(me);
+			},
+			remove : function(organ){
+				organ.onEntityRemove(me);
+				this.list[organ.organIndex] = null;
+				delete this.map[organ.key];
+			},
+			hasPart : function(organIndex){
+				return this.list[organIndex] ? true : false;
+			},
+			removeRandomly : function(){
+				var pool = [];
+				for (var i = 0; i < this.list.length; ++i) {
+					if (this.list[i]){
+						pool.push(this.list[i]);
+					}
+				}
+
+				var index = Math.floor(Math.random() * pool.length);
+
+				this.remove(pool[index]);
 			},
 			// apply an action for each existing (non-null) organs
 			each : function(action){
@@ -72,6 +108,7 @@ Entity.prototype  = {
 		this.key = "e" + (++Entity.prototype.COUNT);
 		
 		this.object =  new THREE.Object3D();
+
 		this.entityObject = new THREE.Mesh(
 			new THREE.BoxGeometry(50, 50, 50), 
 			new THREE.MeshLambertMaterial({
@@ -81,7 +118,7 @@ Entity.prototype  = {
 		this.object.add(this.entityObject);
 		this.object.position.copy(getRandomVectorInCube());
 		
-		this.SphereCollider = new SphereCollider(this, 600);
+		this.SphereCollider = new SphereCollider(this, 300);
 		
 		this.destination = getRandomVectorInCube();
 
@@ -98,7 +135,7 @@ Entity.prototype  = {
 		this.object.scale.copy(vec3);
 	},
 	onDestinationReach : function(){
-		console.log("arrivee ! ");
+		
 
 		if (this.trackedFood){
 			if (this.trackedFood.object.position.distanceTo(this.getPosition()) <= 10){
@@ -107,6 +144,9 @@ Entity.prototype  = {
 					this.trackedFood.isAlive = false;
 					this.trackedFood.removeFromScene();
 					AudioManager.playSound("Pop");
+					//console.log("miam ! " + this.Caracteristique.exp + "/" + this.Caracteristique.nextExp);
+					//this.setScale(new THREE.Vector3(1.1, 1.1, 1.1).add(this.object.scale) );
+					this.gainExp(1);
 				}
 
 				this.trackedFood = null;
@@ -146,20 +186,41 @@ Entity.prototype  = {
 			organ.setColor(color);
 		});
 	},
-	Update : function(threeWrapper, entity) {
+	gainExp : function(value) {
+
+		this.Caracteristique.exp += value;
+
 		
-		entity.effects.each(function(i, effect){
+		
+	},
+	Update : function(threeWrapper, entity) {
+
+		if ( this.Caracteristique.exp >= this.Caracteristique.nextExp ) {
+			this.Caracteristique.exp = 0;
+			this.Caracteristique.nextExp += ( parseInt(this.Caracteristique.nextExp / 1) || 1 );
+		
+			var nextOrgan = OrganHelper.getRandomOrganFor(this);
+			this.setScale(new THREE.Vector3(0.5, 0.5, 0.5).add(this.object.scale) );
+			if(nextOrgan){
+				threeWrapper.addOrganTo(nextOrgan, this);
+			}
+			
+		}
+		
+		/*entity.effects.each(function(i, effect){
 			if (effect.overTime){
-				effect.overTime(entity);
+				effect.overTime(me);
 			}
 			++effect.elapsedFrame;
-			console.log("Effect" + effect.key + " : " + effect.elapsedFrame + " / " + effect.duration);
+			
 			if (effect.elapsedFrame >= effect.duration){
-				entity.effects.addToRemovePool(effect);
+				//console.log("Effect" + effect.key + " : " + effect.elapsedFrame + " / " + effect.duration);
+				entity.effects.remove(effect);
+				//entity.effects.addToRemovePool(effect);
 			}
 		});
 
-		entity.effects.flushRemovePool(entity);
+		entity.effects.flushRemovePool();*/
 
 		
 
@@ -184,25 +245,25 @@ Entity.prototype  = {
 			{
 				if(CollideEntity.TYPE == EntityType.FOOD)
 				{
-					console.log("eat food");
+					
 					//CollideEntity.removeFromScene();
 
 					if (!this.trackedFood) {
 						this.destination = CollideEntity.object.position;
 						this.trackedFood = CollideEntity;
-						this.effects.add(new Effect({
+						/*this.effects.add(new Effect({
 							duration : 60,
 							apply : function(entity) {
-								console.log("apply");
-								entity.Caracteristique.speed += 2;
-								entity.setColor(new THREE.Color(1.0, 0, 0));
+								
+								entity.Caracteristique.speed = entity.Caracteristique.speed >= 5 ? 5 : entity.Caracteristique.speed + 2;
+								
 							},
 							remove : function(entity){
-								console.log("remove");
-								entity.Caracteristique.speed -= 2;
-								entity.setColor(new THREE.Color(0,1.0, 0));;
+								
+								entity.Caracteristique.speed = entity.Caracteristique.speed <= 1 ? 1 : entity.Caracteristique.speed - 2;
+								
 							},
-						}));
+						}));*/
 					}
 					//this.Caracteristique.
 				}
@@ -231,6 +292,21 @@ Entity.prototype  = {
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var EntityState = {
 	NONE : 0,
 	SLEEPING : 1,
@@ -254,7 +330,7 @@ EntityCaracteristique.prototype = {
 	currentLife : 100,
 
 	exp : 0,
-	nextExp : 10,
+	nextExp : 2,
 
 	angerRate : 1,
 	hungerRate : 1,
