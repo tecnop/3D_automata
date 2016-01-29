@@ -3,7 +3,7 @@ var ThreeWrapper = function (data){
 }
 ThreeWrapper.prototype  = {
 	//Box size
-	BOX_SIZE : 6000,
+	BOX_SIZE : 12000,
 	
 	// Camera attributes
 	MAX_Z : 5000,
@@ -132,13 +132,25 @@ ThreeWrapper.prototype  = {
 				food.removeFromScene = function() {
 
 					threeWrapperCtx.scenes.main.remove(food.object);
-					threeWrapperCtx.scenes.main.remove(food.SphereCollider.debugObject);
+
+					/*if(food.SphereCollider.debugObject){
+						threeWrapperCtx.scenes.main.remove(food.SphereCollider.debugObject);
+					}*/
 					threeWrapperCtx.foods.remove(food);
 				}
 			},
 			remove : function(food){
+				var index = -1;
+				for (var i = 0; i < this.list.length; ++i){
+					if (this.list[i].key == food.key){
+						index = i;
+						break;
+					}
+				}
 				
-				this.list.splice(food.index);
+				if (index != -1)
+					this.list.splice(index);
+
 				delete this.map[food.key];
 			}
 		};
@@ -206,7 +218,7 @@ ThreeWrapper.prototype  = {
 		// add "sky box"
 		me.scenes.main.add(
 			new THREE.Mesh(
-				new THREE.SphereGeometry(9000, 24, 24), 
+				new THREE.SphereGeometry(11000, 32, 32), 
 					this.skyDomeMaterial
 					/*new THREE.MeshLambertMaterial({
 						color: new THREE.Color( 0, 0, 0.5 ),
@@ -217,16 +229,34 @@ ThreeWrapper.prototype  = {
 		
 		
 		//Food Initialization
-		var average = me.BOX_SIZE/2;
-		for(var i=0; i < 100; ++i)
+		var average = me.BOX_SIZE/2,
+			currFoodCount = 0,
+			foodCount = 200;
+
+		this.foodInterval = setInterval(function(){
+
+			var newFood = new Food(getRandomVectorInCube(), "NEWTYPE");
+
+			me.foods.add(newFood);
+			me.scenes.main.add(newFood.object);
+			//me.scenes.main.add(newFood.SphereCollider.debugObject);
+
+			if (++currFoodCount >= foodCount){
+				clearInterval(me.foodInterval);
+				return;
+			}
+
+		}, 300);
+
+		/*for(var i=0; i < 200; ++i)
 		{
 			var newFood = new Food(getRandomVectorInCube(), "NEWTYPE");
 
 			me.foods.add(newFood);
 			this.scenes.main.add(newFood.object);
-			this.scenes.main.add(newFood.SphereCollider.debugObject);
+			//this.scenes.main.add(newFood.SphereCollider.debugObject);
 
-		}
+		}*/
 	},
 	reset : function(newParams){
 
@@ -301,7 +331,7 @@ ThreeWrapper.prototype  = {
 			testObject
 		);
 
-		this.addOrganTo(
+		/*this.addOrganTo(
 			new Head.default(),
 			testObject
 		);
@@ -319,7 +349,7 @@ ThreeWrapper.prototype  = {
 		this.addOrganTo(
 			new RightPart.default(),
 			testObject
-		);
+		);*/
 
 		this.entities.add(testObject);
 		this.scenes.main.add(testObject.object);
@@ -331,9 +361,10 @@ ThreeWrapper.prototype  = {
 		//A virer
 		//this.scenes.main.add(testObject.SphereCollider.debugObject);
 
+		/*
 		var s = Math.floor(Math.random() * (3 - 1)) + 1;
-
 		testObject.setScale(new THREE.Vector3(s,s,s));
+		*/
 
 		//console.log("Nb entities : " + this.entities.list.length);
 	},
@@ -364,10 +395,8 @@ ThreeWrapper.prototype  = {
 
 			if(me.paused)
 				return;
-
-			var toDelete = [];
 			
-			me.skyDomeMaterial.uniforms.factor.value = me.clock.getElapsedTime();
+			me.skyDomeMaterial.uniforms.factor.value = me.clock.getElapsedTime() % 1000000;
 
 			// ref :
 			// http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
@@ -390,7 +419,6 @@ ThreeWrapper.prototype  = {
 					organ.Update(me);
 				});
 
-				
 				if(me.entities.list[i].destination) {
 
 					me.entities.list[i].lookAt(me.entities.list[i].destination);
@@ -430,10 +458,10 @@ ThreeWrapper.prototype  = {
 			}
 		
 			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
-				for(var j = i+1, len2 = me.entities.list.length; j < len2; ++j){
+				/*for(var j = i+1, len2 = me.entities.list.length; j < len2; ++j){
 					if(me.entities.list[i].SphereCollider.CheckCollision(me.entities.list[j]))
 						me.entities.list[i].OnCollision(me.entities.list[j]);
-				}
+				}*/
 				for(var k =0,  len3 = me.foods.list.length; k < len3; ++k)
 				{
 					if (me.foods.list[k].isAlive){
@@ -443,9 +471,6 @@ ThreeWrapper.prototype  = {
 				}
 			}
 			
-			for (var i = 0; i < toDelete.length; ++i){
-				toDelete[i].delete();
-			}
 			//Render function
 			me.pointLight.position.copy(me.cameras.main.position);
 

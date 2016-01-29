@@ -1,5 +1,35 @@
 var OrganHelper = {
-	addRandomOrganTo : function(entity){
+	getRandomOrganFor : function(entity){
+
+		var slots =[];
+
+		for (var i = 0; i < entity.organs.list.length; ++i){
+			if (!entity.organs.list[i]){
+				slots.push(i);
+			}
+		}
+
+		var index = Math.floor(Math.random() * slots.length),
+			choosenOne = slots[index];
+
+
+		if (choosenOne == 0){
+			return Mouth.random();
+		}
+		else if (choosenOne == 1){
+			return Body.random();
+		}
+		else if (choosenOne == 2){
+			return Head.random();
+		}
+		else if (choosenOne == 3){
+			return LeftPart.random();
+		}
+		else if (choosenOne == 4){
+			return RightPart.random();
+		}
+
+		return null;
 
 	}
 }
@@ -16,6 +46,14 @@ var Organ = function(data){
 }
 
 var Mouth = {
+	random : function(){
+		var rdm = Math.floor(Math.random() * 100);
+
+		return new Mouth.default({
+
+		});
+
+	},
 	default : function(data){
 		var me = this;
 		this.meshes = [];
@@ -55,6 +93,13 @@ var Mouth = {
 
 		this.onEntityAdd = function(entity){
 
+			//entity.SphereCollider.radius += 100;
+		}
+
+		this.onEntityRemove = function(entity){
+
+			//entity.SphereCollider.radius -= 100;
+
 		}
 
 		this.Update = function(threeWrapper) {
@@ -88,6 +133,14 @@ var Mouth = {
 }
 
 var Body = {
+	random : function(){
+		var rdm = Math.floor(Math.random() * 100);
+
+		return new Body.default({
+			
+		});
+
+	},
 	default : function(data){
 		var me = this;
 		this.meshes = [];
@@ -132,6 +185,13 @@ var Body = {
 		
 		this.onEntityAdd = function(entity){
 
+			entity.Caracteristique.speed += 1;
+		}
+
+		this.onEntityRemove = function(entity){
+
+			entity.Caracteristique.speed -= 1;
+			
 		}
 
 		this.Update = function(threeWrapper) {
@@ -203,6 +263,14 @@ var Body = {
 }
 
 var Head = {
+	random : function(){
+		var rdm = Math.floor(Math.random() * 100);
+
+		return new Head.default({
+			
+		});
+
+	},
 	default : function(data){
 		var me = this;
 		this.meshes = [];
@@ -269,13 +337,13 @@ var Head = {
 		this.Update = function(threeWrapper) {
 
 			if (me.growing){
-				me.antenaRightSphere.scale.x += 0.05 * threeWrapper.entitiesSpeedFactor;
-				me.antenaRightSphere.scale.y += 0.05 * threeWrapper.entitiesSpeedFactor;
-				me.antenaRightSphere.scale.z += 0.05 * threeWrapper.entitiesSpeedFactor;
+				me.antenaRightSphere.scale.x += 0.03 * threeWrapper.entitiesSpeedFactor;
+				me.antenaRightSphere.scale.y += 0.03 * threeWrapper.entitiesSpeedFactor;
+				me.antenaRightSphere.scale.z += 0.03 * threeWrapper.entitiesSpeedFactor;
 
-				me.antenaLeftSphere.scale.x += 0.05 * threeWrapper.entitiesSpeedFactor;
-				me.antenaLeftSphere.scale.y += 0.05 * threeWrapper.entitiesSpeedFactor;
-				me.antenaLeftSphere.scale.z += 0.05 * threeWrapper.entitiesSpeedFactor;
+				me.antenaLeftSphere.scale.x += 0.03 * threeWrapper.entitiesSpeedFactor;
+				me.antenaLeftSphere.scale.y += 0.03 * threeWrapper.entitiesSpeedFactor;
+				me.antenaLeftSphere.scale.z += 0.03 * threeWrapper.entitiesSpeedFactor;
 
 				if (me.antenaRightSphere.scale.x >= 3){
 					me.growing = false;
@@ -303,6 +371,14 @@ var Head = {
 }
 
 var LeftPart = {
+	random : function(){
+		var rdm = Math.floor(Math.random() * 100);
+
+		return new LeftPart.default({
+			
+		});
+
+	},
 	default : function(data){
 		var me = this;
 		this.meshes = [];
@@ -353,6 +429,14 @@ var LeftPart = {
 }
 
 var RightPart = {
+	random : function(){
+		var rdm = Math.floor(Math.random() * 100);
+
+		return new RightPart.default({
+			
+		});
+
+	},
 	default : function(data){
 		var me = this;
 		this.meshes = [];
