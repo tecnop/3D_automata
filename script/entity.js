@@ -157,7 +157,7 @@ Entity.prototype  = {
 				effect.overTime(entity);
 			}
 			++effect.elapsedFrame;
-			console.log("Effect" + effect.key + " : " + effect.elapsedFrame + " / " + effect.duration);
+			//console.log("Effect" + effect.key + " : " + effect.elapsedFrame + " / " + effect.duration);
 			if (effect.elapsedFrame >= effect.duration){
 				entity.effects.addToRemovePool(effect);
 			}
@@ -194,7 +194,7 @@ Entity.prototype  = {
 					if (!this.trackedFood) {
 						this.destination = CollideEntity.object.position;
 						this.trackedFood = CollideEntity;
-						this.effects.add(new Effect({
+						/*this.effects.add(new Effect({
 							duration : 60,
 							apply : function(entity) {
 								console.log("apply");
@@ -206,7 +206,7 @@ Entity.prototype  = {
 								entity.Caracteristique.speed -= 2;
 								entity.setColor(new THREE.Color(0,1.0, 0));;
 							},
-						}));
+						}));*/
 					}
 					//this.Caracteristique.
 				}
