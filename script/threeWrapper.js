@@ -235,28 +235,25 @@ ThreeWrapper.prototype  = {
 
 		this.foodInterval = setInterval(function(){
 
-			var newFood = new Food(getRandomVectorInCube(), "NEWTYPE");
+			if (me.foods.list.length < 200) {
 
-			me.foods.add(newFood);
-			me.scenes.main.add(newFood.object);
-			//me.scenes.main.add(newFood.SphereCollider.debugObject);
-
-			if (++currFoodCount >= foodCount){
-				clearInterval(me.foodInterval);
-				return;
+				var newFood = new Food(getRandomVectorInCube(), "NEWTYPE");
+				me.foods.add(newFood);
+				me.scenes.main.add(newFood.object);
+				//me.scenes.main.add(newFood.SphereCollider.debugObject);
+				
 			}
 
-		}, 300);
+		}, 1000);
 
-		/*for(var i=0; i < 200; ++i)
-		{
+		for(var i=0; i < 30; ++i) {
 			var newFood = new Food(getRandomVectorInCube(), "NEWTYPE");
 
 			me.foods.add(newFood);
 			this.scenes.main.add(newFood.object);
 			//this.scenes.main.add(newFood.SphereCollider.debugObject);
 
-		}*/
+		}
 	},
 	reset : function(newParams){
 

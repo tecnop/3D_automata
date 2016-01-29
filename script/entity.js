@@ -146,7 +146,7 @@ Entity.prototype  = {
 					this.trackedFood.removeFromScene();
 					AudioManager.playSound("Pop");
 					//console.log("miam ! " + this.Caracteristique.exp + "/" + this.Caracteristique.nextExp);
-					//this.setScale(new THREE.Vector3(1.1, 1.1, 1.1).add(this.object.scale) );
+					this.setScale(new THREE.Vector3(0.1, 0.1, 0.1).add(this.object.scale) );
 					this.gainExp(1);
 				}
 

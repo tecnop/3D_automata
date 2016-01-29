@@ -156,7 +156,7 @@ var Body = {
 		this.name = "BODY";
 		this.relativePosition = new THREE.Vector3(0, 0,-100);
 
-		var boxGeometry = new THREE.BoxGeometry(6, 18, 90);
+		var boxGeometry = new THREE.BoxGeometry(6, 18, data.sphereRadius || 90);
 
 		var count = data.count || 5,
 			radius = data.radius || 25,
