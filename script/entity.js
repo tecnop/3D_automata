@@ -281,7 +281,7 @@ Entity.prototype  = {
 	createParticuleEmitter : function() {
 		this.particleGroup = new SPE.Group({
 			texture: {
-				value: THREE.ImageUtils.loadTexture('./images/smokeparticle.png')
+				value: THREE.ImageUtils.loadTexture('./images/star.png')
 			},
 			maxParticleCount : 300
 		});
@@ -307,7 +307,7 @@ Entity.prototype  = {
 			size: {
 				value: 100
 			},
-			particleCount: 200
+			particleCount: 120
 		});
 		
 		this.particleGroup.addEmitter(this.emitter);
