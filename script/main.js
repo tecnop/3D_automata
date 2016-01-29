@@ -48,6 +48,10 @@ $(document).ready(function()  {
 		else if (e.charCode == 100){
 			threeWrapper.entities.list[threeWrapper.entities.list.length - 1].delete();
 		}
+		// p
+		else if (e.charCode == 112){
+			threeWrapper.pause();
+		}
 		// +
 		else if (e.charCode == 43){
 			threeWrapper.speedUp();

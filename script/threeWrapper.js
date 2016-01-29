@@ -3,7 +3,7 @@ var ThreeWrapper = function (data){
 }
 ThreeWrapper.prototype  = {
 	//Box size
-	BOX_SIZE : 12000,
+	BOX_SIZE : 18000,
 	
 	// Camera attributes
 	MAX_Z : 5000,
@@ -327,7 +327,7 @@ ThreeWrapper.prototype  = {
 		var testObject = new Entity("1;1;10;" + redColor + ";" + greenColor + ";"+ blueColor +";100000"); //Si on veut créer un CSV de config pour générer des entitées facilement
 
 		this.addOrganTo(
-			new Mouth.default(),
+			Mouth.random(),
 			testObject
 		);
 

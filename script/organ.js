@@ -50,7 +50,7 @@ var Mouth = {
 		var rdm = Math.floor(Math.random() * 100);
 
 		return new Mouth.default({
-
+			depth : Math.floor(Math.random() * (180 - 50)) + 50,
 		});
 
 	},
@@ -61,13 +61,13 @@ var Mouth = {
 		this.relativePosition = new THREE.Vector3(0, 0, 90);
 
 		this.mouthLeft = new THREE.Mesh(
-			new THREE.BoxGeometry(10, 20, 80),
+			new THREE.BoxGeometry(10, 20, data.depth || 80),
 			new THREE.MeshLambertMaterial({
 				color: new THREE.Color( 1, 0, 0 ),
 			})
 		);
 		this.mouthRight = new THREE.Mesh(
-			new THREE.BoxGeometry(10, 20, 80),
+			new THREE.BoxGeometry(10, 20, data.depth || 80),
 			new THREE.MeshLambertMaterial({
 				color: new THREE.Color( 1, 0, 0 ),
 			})
@@ -115,8 +115,8 @@ var Mouth = {
 			}
 			else {
 
-				me.mouthLeft.rotation.y += 0.06 * threeWrapper.entitiesSpeedFactor;
-				me.mouthRight.rotation.y -= 0.06 * threeWrapper.entitiesSpeedFactor;
+				me.mouthLeft.rotation.y += 0.04 * threeWrapper.entitiesSpeedFactor;
+				me.mouthRight.rotation.y -= 0.04 * threeWrapper.entitiesSpeedFactor;
 
 				if (me.mouthRight.rotation.y <= -0.30){
 					me.openingMouth = true;
@@ -134,11 +134,20 @@ var Mouth = {
 
 var Body = {
 	random : function(){
-		var rdm = Math.floor(Math.random() * 100);
+		var rdm = Math.floor(Math.random() * 100),
+			params = {
+				count : Math.floor(Math.random() * (12 - 3)) + 3,
+				radius : Math.floor(Math.random() * (80 - 20)) + 20,
+				sphereRadius : Math.floor(Math.random() * (60 - 20)) + 20,
+			};
 
-		return new Body.default({
-			
-		});
+		if( rdm >= 50){
+			return new Body.default(params);
+		}
+		else {
+			return new Body.sphere(params);
+		}
+		
 
 	},
 	default : function(data){
@@ -149,8 +158,8 @@ var Body = {
 
 		var boxGeometry = new THREE.BoxGeometry(6, 18, 90);
 
-		var count = 5,
-			radius = 25,
+		var count = data.count || 5,
+			radius = data.radius || 25,
 			meshes = [],
 			currRotation = 0,
 			step = 360 / count;
@@ -210,10 +219,10 @@ var Body = {
 		this.name = "BODY";
 		this.relativePosition = new THREE.Vector3(0, 0,-100);
 
-		var boxGeometry = new THREE.SphereGeometry( 10, 16, 16 );
+		var boxGeometry = new THREE.SphereGeometry( data.sphereRadius || 10, 16, 16 );
 
-		var count = 8,
-			radius = 50,
+		var count = data.count || 8,
+			radius = data.radius || 50,
 			meshes = [],
 			currRotation = 0,
 			step = 360 / count;
@@ -267,7 +276,7 @@ var Head = {
 		var rdm = Math.floor(Math.random() * 100);
 
 		return new Head.default({
-			
+			depth : Math.floor(Math.random() * (100 - 50)) + 50,
 		});
 
 	},
@@ -280,7 +289,7 @@ var Head = {
 		this.relativePosition = new THREE.Vector3(0, 50, 0);
 
 		var sphereGeometry = new THREE.SphereGeometry( 5, 32, 32 ),
-			geometry = new THREE.CylinderGeometry( 1, 8, 50, 16 );
+			geometry = new THREE.CylinderGeometry( 1, 8, data.depth || 50, 16 );
 
 		// Left
 		this.antenaLeftSphere = new THREE.Mesh(
@@ -337,26 +346,26 @@ var Head = {
 		this.Update = function(threeWrapper) {
 
 			if (me.growing){
-				me.antenaRightSphere.scale.x += 0.03 * threeWrapper.entitiesSpeedFactor;
-				me.antenaRightSphere.scale.y += 0.03 * threeWrapper.entitiesSpeedFactor;
-				me.antenaRightSphere.scale.z += 0.03 * threeWrapper.entitiesSpeedFactor;
+				me.antenaRightSphere.scale.x += 0.03;
+				me.antenaRightSphere.scale.y += 0.03;
+				me.antenaRightSphere.scale.z += 0.03;
 
-				me.antenaLeftSphere.scale.x += 0.03 * threeWrapper.entitiesSpeedFactor;
-				me.antenaLeftSphere.scale.y += 0.03 * threeWrapper.entitiesSpeedFactor;
-				me.antenaLeftSphere.scale.z += 0.03 * threeWrapper.entitiesSpeedFactor;
+				me.antenaLeftSphere.scale.x += 0.03;
+				me.antenaLeftSphere.scale.y += 0.03;
+				me.antenaLeftSphere.scale.z += 0.03;
 
 				if (me.antenaRightSphere.scale.x >= 3){
 					me.growing = false;
 				}
 			}
 			else {
-				me.antenaRightSphere.scale.x -= 0.2 * threeWrapper.entitiesSpeedFactor;
-				me.antenaRightSphere.scale.y -= 0.2 * threeWrapper.entitiesSpeedFactor;
-				me.antenaRightSphere.scale.z -= 0.2 * threeWrapper.entitiesSpeedFactor;
+				me.antenaRightSphere.scale.x -= 0.2;
+				me.antenaRightSphere.scale.y -= 0.2;
+				me.antenaRightSphere.scale.z -= 0.2;
 
-				me.antenaLeftSphere.scale.x -= 0.2 * threeWrapper.entitiesSpeedFactor;
-				me.antenaLeftSphere.scale.y -= 0.2 * threeWrapper.entitiesSpeedFactor;
-				me.antenaLeftSphere.scale.z -= 0.2 * threeWrapper.entitiesSpeedFactor;
+				me.antenaLeftSphere.scale.x -= 0.2;
+				me.antenaLeftSphere.scale.y -= 0.2;
+				me.antenaLeftSphere.scale.z -= 0.2;
 
 				if (me.antenaRightSphere.scale.x <= 1){
 					me.growing = true;

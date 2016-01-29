@@ -118,7 +118,7 @@ Entity.prototype  = {
 		this.object.add(this.entityObject);
 		this.object.position.copy(getRandomVectorInCube());
 		
-		this.SphereCollider = new SphereCollider(this, 300);
+		this.SphereCollider = new SphereCollider(this, 500);
 		
 		this.destination = getRandomVectorInCube();
 		
@@ -198,7 +198,7 @@ Entity.prototype  = {
 
 		if ( this.Caracteristique.exp >= this.Caracteristique.nextExp ) {
 			this.Caracteristique.exp = 0;
-			this.Caracteristique.nextExp += ( parseInt(this.Caracteristique.nextExp / 1) || 1 );
+			++this.Caracteristique.nextExp;
 		
 			var nextOrgan = OrganHelper.getRandomOrganFor(this);
 			this.setScale(new THREE.Vector3(0.5, 0.5, 0.5).add(this.object.scale) );
