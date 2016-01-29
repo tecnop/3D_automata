@@ -88,12 +88,25 @@ ThreeWrapper.prototype  = {
 				}
 			}
 		};
+
 		this.foods = {
 			map : {},
 			list : [],
 			add : function(food){
+				food.index = this.list.length -1;
 				this.map[food.key] = food;
 				this.list.push(food);
+				food.removeFromScene = function() {
+
+					threeWrapperCtx.scenes.main.remove(food.object);
+					threeWrapperCtx.scenes.main.remove(food.SphereCollider.debugObject);
+					threeWrapperCtx.foods.remove(food);
+				}
+			},
+			remove : function(food){
+				
+				this.list.splice(food.index);
+				delete this.map[food.key];
 			}
 		};
 
@@ -174,9 +187,11 @@ ThreeWrapper.prototype  = {
 		for(var i=0; i < 100; ++i)
 		{
 			var newFood = new Food(getRandomVectorInCube(), "NEWTYPE");
+
 			me.foods.add(newFood);
 			this.scenes.main.add(newFood.object);
 			this.scenes.main.add(newFood.SphereCollider.debugObject);
+
 		}
 	},
 	reset : function(newParams){
@@ -258,7 +273,7 @@ ThreeWrapper.prototype  = {
 		);
 
 		this.addOrganTo(
-			new Body.default(),
+			new Body.sphere(),
 			testObject
 		);
 
@@ -266,11 +281,21 @@ ThreeWrapper.prototype  = {
 			new LeftPart.default(),
 			testObject
 		);
+
+		this.addOrganTo(
+			new RightPart.default(),
+			testObject
+		);
+
 		this.entities.add(testObject);
 		this.scenes.main.add(testObject.object);
 		//this.scenes.main.add(testObject.particuleEngine.particleMesh);
 		//A virer
 		this.scenes.main.add(testObject.SphereCollider.debugObject);
+
+		var s = Math.floor(Math.random() * (3 - 1)) + 1;
+
+		testObject.setScale(new THREE.Vector3(s,s,s));
 
 		//console.log("Nb entities : " + this.entities.list.length);
 	},
@@ -314,14 +339,14 @@ ThreeWrapper.prototype  = {
 			//Update Logic des entitées
 			//A supprimer si tu penses qu'on peut update les caractéristique en même temps que les positions 
 			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
-				me.entities.list[i].Update(me.clock.getDelta());
+				me.entities.list[i].Update(me, me.entities.list[i]);
 			}
 			
 			for (var i = 0, len = me.entities.list.length; i < len; ++i) {
 				
 				// Organs update
 				me.entities.list[i].organs.each(function(i, organ){
-					organ.Update();
+					organ.Update(me);
 				});
 
 				
@@ -370,8 +395,10 @@ ThreeWrapper.prototype  = {
 				}
 				for(var k =0,  len3 = me.foods.list.length; k < len3; ++k)
 				{
-					if(me.entities.list[i].SphereCollider.CheckCollision(me.foods.list[k]))
-						me.entities.list[i].OnCollision(me.foods.list[k]);
+					if (me.foods.list[k].isAlive){
+						if(me.entities.list[i].SphereCollider.CheckCollision(me.foods.list[k]))
+							me.entities.list[i].OnCollision(me.foods.list[k]);
+					}
 				}
 			}
 			

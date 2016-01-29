@@ -10,8 +10,10 @@ Food.prototype = {
 	TYPE : EntityType.FOOD,
 	init : function(position, type)
 	{
-		this.key = "e" + (++Food.COUNT);
-		
+
+		this.key = "e" + (++Food.prototype.COUNT);
+	
+		this.isAlive = true;
 		this.object = new THREE.Mesh(
 			new THREE.SphereGeometry( FoodRadius-1.5, 32, 32 ),
 			new THREE.MeshLambertMaterial({
@@ -21,6 +23,10 @@ Food.prototype = {
 		
 		this.object.position.copy(position);
 		this.SphereCollider = new SphereCollider(this, FoodRadius);
+		
+	},
+	removeFromScene : function(){
+		console.warn("Override me !!");
 	},
 	getPosition : function(){
 		return this.object.position;

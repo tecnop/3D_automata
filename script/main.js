@@ -28,7 +28,7 @@ $(document).ready(function()  {
 
 		// t
 		if (e.charCode == 116){
-			for(var i=0; i < 2; ++i)
+			for(var i=0; i < 1; ++i)
 				threeWrapper.createRandomCude();
 		}
 		//z
