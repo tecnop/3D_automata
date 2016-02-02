@@ -5,21 +5,25 @@ var Food = function(position, type)
 
 var FoodRadius = 20;
 
+var FoodGeometry = new THREE.SphereGeometry( FoodRadius-1.5, 32, 32 );
+
+var FoodMaterial = new THREE.MeshLambertMaterial({
+	color : new THREE.Color( 0, 1, 0),
+	emissive: new THREE.Color( 0, 0, 0.5),
+});
+
 Food.prototype = {
 	COUNT : 1,
-	TYPE : EntityType.FOOD,
+	TYPE : EntityType.FOOD, 
 	init : function(position, type)
 	{
 
-		this.key = "e" + (++Food.prototype.COUNT);
+		this.key = "f" + (++Food.prototype.COUNT);
 	
 		this.isAlive = true;
 		this.object = new THREE.Mesh(
-			new THREE.SphereGeometry( FoodRadius-1.5, 32, 32 ),
-			new THREE.MeshLambertMaterial({
-				color : new THREE.Color( 0, 1, 0),
-				emissive: new THREE.Color( 0, 0, 0.5),
-			})
+			FoodGeometry,
+			FoodMaterial
 		);
 		
 		this.object.position.copy(position);

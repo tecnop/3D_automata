@@ -3,13 +3,61 @@ var Entity = function (data){
 	this.init(data);
 }
 
-Entity.prototype  = { 
+var EntityGeometry = new THREE.BoxGeometry(50, 50, 50);
+
+var EntityMaterials = {
+	// Red
+	mat1 : new THREE.MeshLambertMaterial({
+		color: new THREE.Color( 1, 1, 0 ),
+	}),
+	random : function(){
+
+	}
+}
+
+var EntityMovementFunctions = {
+	items : [
+		/*{
+			label : "Linear",
+			beauty : 0,
+			action : function(vec3) {
+				
+			}
+		},*/
+		{
+			label : "Cos",
+			beauty : 2,
+			action : function(t, entity) {
+				
+
+				//console.log("t : " + t + "; value : " + Math.cos( parseInt( ( t * 360) ) * (Math.PI / 180 )  ) );
+
+				return new THREE.Vector3(
+
+					0,
+					0,
+					Math.cos( parseInt( ( t * 360) ) * (Math.PI / 180 )  ) * 10
+					
+				);
+			}
+		}
+	],
+	random : function(){
+		return this.items[Math.floor(Math.random() * this.items.length)];
+	}
+}
+var SPETexture = THREE.ImageUtils.loadTexture('./images/star.png');
+
+Entity.prototype  = {
 	COUNT : 1,
 	TYPE : EntityType.CREATURE,
+	fromPosition : null,
 	init : function(data) {
 		var me = this;
 		this.Caracteristique = new EntityCaracteristique(data);
 
+		this.movementFunction = EntityMovementFunctions.random().action;
+		/*
 		this.effects = {
 			list : [],
 			map : {},
@@ -60,6 +108,7 @@ Entity.prototype  = {
 				this.removePool = [];
 			}
 		};
+		*/
 
 		this.organs = {
 			map : {},
@@ -110,10 +159,11 @@ Entity.prototype  = {
 		this.object =  new THREE.Object3D();
 
 		this.entityObject = new THREE.Mesh(
-			new THREE.BoxGeometry(50, 50, 50), 
-			new THREE.MeshLambertMaterial({
+			EntityGeometry,
+			EntityMaterials.mat1
+			/*new THREE.MeshLambertMaterial({
 				color: this.Caracteristique.color,//new THREE.Color( 1, 0, 0 ),
-			})
+			})*/
 		);
 		this.object.add(this.entityObject);
 		this.object.position.copy(getRandomVectorInCube());
@@ -167,6 +217,8 @@ Entity.prototype  = {
 
 		this.object.position.add(vec3);
 		this.SphereCollider.debugObject.position.add(vec3);
+
+		return this;
 	},
 	addOrgan : function(organ){
 		this.organs.add(organ);
@@ -208,21 +260,11 @@ Entity.prototype  = {
 			
 		}
 		
-		this.particleGroup.tick(0.01);//threeWrapper.clock.getDelta());
+		//this.particleGroup.tick(0.01);
+		this.particleGroup.tick();
 		this.emitter.position.value = this.getPosition();
 
-		/*if(this.State != EntityState.SLEEPING)
-			this.Tiredness += 1;
-		else
-			this.Tiredness -= 1;
-		
-		
-		this.Energy = this.Hunger * this.LifeTime;
-		
-		if(this.Energy > 100 * 100)
-		{
 
-		}*/
 	},
 	OnCollision(CollideEntity)
 	{
@@ -277,14 +319,14 @@ Entity.prototype  = {
 	removeFromScene : function(){
 		console.warn(this.key + " : removeFromScene method must be overrided.")
 	},
-	
 	createParticuleEmitter : function() {
 		this.particleGroup = new SPE.Group({
 			texture: {
-				value: THREE.ImageUtils.loadTexture('./images/star.png')
+				value: SPETexture
 			},
-			maxParticleCount : 300
+			maxParticleCount : 150//300
 		});
+
 		this.emitter = new SPE.Emitter({
 			maxAge: {
 				value: 0.5
@@ -305,9 +347,12 @@ Entity.prototype  = {
 				value: this.Caracteristique.color
 			},
 			size: {
-				value: 100
+				value: 80,//100
 			},
-			particleCount: 120
+			opacity : {
+				value : 1.0
+			},
+			particleCount: 10//120
 		});
 		
 		this.particleGroup.addEmitter(this.emitter);

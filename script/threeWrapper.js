@@ -228,14 +228,17 @@ ThreeWrapper.prototype  = {
 		);
 		
 		
-		//Food Initialization
+		/*
+		*	Food Initialization
+		*/
+
 		var average = me.BOX_SIZE/2,
 			currFoodCount = 0,
-			foodCount = 200;
+			foodCount = 10;
 
 		this.foodInterval = setInterval(function(){
 
-			if (me.foods.list.length < 200) {
+			if (me.foods.list.length < foodCount) {
 
 				var newFood = new Food(getRandomVectorInCube(), "NEWTYPE");
 				me.foods.add(newFood);
@@ -244,7 +247,7 @@ ThreeWrapper.prototype  = {
 				
 			}
 
-		}, 1000);
+		}, 300);
 
 		for(var i=0; i < 30; ++i) {
 			var newFood = new Food(getRandomVectorInCube(), "NEWTYPE");
@@ -254,6 +257,7 @@ ThreeWrapper.prototype  = {
 			//this.scenes.main.add(newFood.SphereCollider.debugObject);
 
 		}
+		
 	},
 	reset : function(newParams){
 
@@ -418,6 +422,10 @@ ThreeWrapper.prototype  = {
 
 				if(me.entities.list[i].destination) {
 
+					if (!me.entities.list[i].fromPosition){
+						me.entities.list[i].fromPosition = new THREE.Vector3(0,0,0).copy(me.entities.list[i].getPosition());
+					}
+
 					me.entities.list[i].lookAt(me.entities.list[i].destination);
 
 					var vec = fakeVector.subVectors(
@@ -425,7 +433,7 @@ ThreeWrapper.prototype  = {
 						me.entities.list[i].getPosition()
 					);
 
-					if( (me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor) >= me.entities.list[i].destination.distanceTo(me.entities.list[i].getPosition())){
+					if( (me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor) >= me.entities.list[i].destination.distanceTo(me.entities.list[i].getPosition()) ){
 						me.entities.list[i].setPosition(me.entities.list[i].destination);
 						
 						
@@ -436,12 +444,35 @@ ThreeWrapper.prototype  = {
 						);
 
 						me.entities.list[i].destination = null;
+						me.entities.list[i].fromPosition = null;
 						me.entities.list[i].onDestinationReach(me, destination);
 
 					}
 					else {
+						var fullDis = me.entities.list[i].destination.distanceTo(me.entities.list[i].fromPosition);
+						var currDis = me.entities.list[i].fromPosition.distanceTo(me.entities.list[i].getPosition());
+
+						var t = currDis / fullDis;
+
+						//console.log(currDis/fullDis);
+						
+						
+
 						me.entities.list[i].add(
 							vec.normalize().multiply(
+								new THREE.Vector3(
+									me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor,
+									me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor,// * (Math.sin( parseInt( ( (currDis/fullDis) * 360) ) * (Math.PI / 180 )  ) * 1),
+									me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor
+								)
+							)
+						);
+						
+						me.entities.list[i].add(
+							me.entities.list[i].movementFunction(
+								me.entities.list[i].fromPosition.distanceTo(me.entities.list[i].getPosition()) / me.entities.list[i].destination.distanceTo(me.entities.list[i].fromPosition),
+								me.entities.list[i]
+							).multiply(
 								new THREE.Vector3(
 									me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor,
 									me.entities.list[i].Caracteristique.speed * me.entitiesSpeedFactor,
@@ -449,6 +480,17 @@ ThreeWrapper.prototype  = {
 								)
 							)
 						);
+						/*me.entities.list[i].add(
+							me.entities.list[i].movementFunction(
+								me.entities.list[i].fromPosition.distanceTo(me.entities.list[i].getPosition()) / me.entities.list[i].destination.distanceTo(me.entities.list[i].fromPosition),
+								me.entities.list[i]
+							)
+						);*/
+						
+
+						//console.log(Math.cos( parseInt( ( (currDis/fullDis) * 360) ) * (Math.PI / 180 )  ) * 5);
+						//me.entities.list[i].movementFunction(me.entities.list[i].getPosition());
+
 					}
 				}
 				
